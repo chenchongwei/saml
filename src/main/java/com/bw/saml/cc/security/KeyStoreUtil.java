@@ -1,5 +1,7 @@
 package com.bw.saml.cc.security;
 
+import org.springframework.core.io.ClassPathResource;
+
 import java.io.*;
 import java.security.*;
 import java.util.*;
@@ -25,7 +27,8 @@ public class KeyStoreUtil
         
         try
         {
-            FileInputStream in = new FileInputStream (filename);
+            InputStream in = new ClassPathResource(filename).getInputStream();
+            //FileInputStream in = new FileInputStream (filename);
             result.load (in, password.toCharArray ());
             in.close ();
         }

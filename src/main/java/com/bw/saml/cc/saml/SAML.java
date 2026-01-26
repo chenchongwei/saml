@@ -69,31 +69,31 @@ public class SAML
 
             SAML handler = new SAML ("http://saml.r.us/AssertingParty");
 
-            if (type.equals ("authn"))
-                handler.printToFile (handler.createAuthnAssertion 
-                    (handler.createSubject 
-                        ("harold_dt", null, "sender-vouches",null),
-                            AuthnContext.PPT_AUTHN_CTX), 
-                    null);
-
-            else if (type.equals ("attr"))
-            {
-                Subject subject = handler.createSubject 
-                    ("louisdraper@abc.gov", NameID.EMAIL, null,null);
-                    
-                Map<String,String> attributes = new HashMap<String,String> ();
-                attributes.put ("securityClearance", "C2");
-                attributes.put ("roles", "editor,reviewer");
-                handler.printToFile 
-                    (handler.createAttributeAssertion (subject, attributes), 
-                        null);
-            }
-            else
-            {
-                System.out.println 
-                    ("Usage: java cc.saml.SAML <generate> authn|attr");
-                System.exit (-1);
-            }
+//            if (type.equals ("authn"))
+//                handler.printToFile (handler.createAuthnAssertion
+//                    (handler.createSubject
+//                        ("harold_dt", null, "sender-vouches",null),
+//                            AuthnContext.PPT_AUTHN_CTX,""),
+//                    null,"");
+//
+//            else if (type.equals ("attr"))
+//            {
+//                Subject subject = handler.createSubject
+//                    ("louisdraper@abc.gov", NameID.EMAIL, null,null,"");
+//
+//                Map<String,String> attributes = new HashMap<String,String> ();
+//                attributes.put ("securityClearance", "C2");
+//                attributes.put ("roles", "editor,reviewer");
+//                handler.printToFile
+//                    (handler.createAttributeAssertion (subject, attributes),
+//                        null);
+//            }
+//            else
+//            {
+//                System.out.println
+//                    ("Usage: java cc.saml.SAML <generate> authn|attr");
+//                System.exit (-1);
+//            }
         }
         else
         {
@@ -251,7 +251,7 @@ public class SAML
         or "bearer", as HOK would require additional parameters and so is NYI
     */
     public Subject createSubject
-        (String username, String format, String confirmationMethod,String recipient)
+        (String username, String format, String confirmationMethod,String recipient,String inResponseTo)
     {
         NameID nameID = create (NameID.class, NameID.DEFAULT_ELEMENT_NAME);
         nameID.setValue (username);
@@ -269,6 +269,8 @@ public class SAML
             confirmation.setMethod (CM_PREFIX + confirmationMethod);
             SubjectConfirmationData confirmationData = create(SubjectConfirmationData.class,SubjectConfirmationData.DEFAULT_ELEMENT_NAME);
             confirmationData.setRecipient(recipient);
+            confirmationData.setInResponseTo(inResponseTo);
+            confirmationData.setNotOnOrAfter(new DateTime().plusMinutes(10));
             confirmation.setSubjectConfirmationData(confirmationData);
             subject.getSubjectConfirmations ().add (confirmation);
         }

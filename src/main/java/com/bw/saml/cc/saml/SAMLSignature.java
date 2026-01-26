@@ -255,20 +255,21 @@ public class SAMLSignature
                 (factory.newCanonicalizationMethod
                                 (SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS,
                                         (C14NMethodParameterSpec) null),
-                        factory.newSignatureMethod(SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1, null),
+                        factory.newSignatureMethod(SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256, null),
                         Collections.singletonList(ref));
 
         XMLSignature signature = factory.newXMLSignature(signedInfo, keyInfo);
         DOMSignContext signContext = new DOMSignContext
                 (keyPair.getPrivate(), signNode);
-        //signContext.setDefaultNamespacePrefix("ds");
+        signContext.setDefaultNamespacePrefix("ds");
         Element element = (Element) doc.getElementsByTagName("saml:Assertion").item(0);
         element.setIdAttribute("ID", true);
         signContext.setIdAttributeNS(element, null, "ID");
         signature.sign(signContext);
 
-        Node signatureElement = signNode.getLastChild ();
-
+        //Node signatureElement = signNode.getLastChild ();
+        signNode = doc.getElementsByTagName("samlp:Response").item(0);
+        Node signatureElement = doc.getElementsByTagName("samlp:Response").item(0).getFirstChild();
         boolean foundIssuer = false;
         Node elementAfterIssuer = null;
         NodeList children = signNode.getChildNodes ();

@@ -2,10 +2,16 @@ package com.bw.saml.cc.saml;
 
 import org.joda.time.DateTime;
 import org.opensaml.saml2.core.*;
-import org.opensaml.xml.Configuration;
-import org.opensaml.xml.XMLObject;
-import org.opensaml.xml.XMLObjectBuilder;
+import org.opensaml.saml2.core.impl.AttributeBuilder;
+import org.opensaml.saml2.core.impl.AttributeStatementBuilder;
+import org.opensaml.xml.*;
 import org.opensaml.xml.schema.XSAny;
+import org.w3c.dom.Element;
+import sun.font.AttributeValues;
+
+import javax.xml.namespace.QName;
+import java.util.List;
+import java.util.UUID;
 
 /**
 Simple examples of coding to the OpenSAML API.
@@ -31,7 +37,8 @@ public class SAMLAssertion
     /**
     Creates a file whose contents are a SAML authentication assertion.
     */
-    public Assertion createStockAuthnAssertion (String idpEntityId,String assertionId,String spEntityId)
+    public Assertion createStockAuthnAssertion (String idpEntityId,String assertionId,String spEntityId
+            ,String userId,String userName,String inResponseTo)
     {
         DateTime now = new DateTime ();
         Issuer issuer = create (Issuer.class, Issuer.DEFAULT_ELEMENT_NAME);
@@ -45,8 +52,8 @@ public class SAMLAssertion
         
         Conditions conditions = create 
             (Conditions.class, Conditions.DEFAULT_ELEMENT_NAME);
-        conditions.setNotBefore (now.minusSeconds (15));
-        conditions.setNotOnOrAfter (now.plusSeconds (30));
+        //conditions.setNotBefore (now.minusSeconds (15));
+        //conditions.setNotOnOrAfter (now.plusSeconds (30));
         AudienceRestriction audienceRestriction = create(AudienceRestriction.class,AudienceRestriction.DEFAULT_ELEMENT_NAME);
         Audience audience = create(Audience.class,Audience.DEFAULT_ELEMENT_NAME);
         audience.setAudienceURI(spEntityId);
@@ -55,7 +62,7 @@ public class SAMLAssertion
         
         AuthnContextClassRef ref = create (AuthnContextClassRef.class, 
             AuthnContextClassRef.DEFAULT_ELEMENT_NAME);
-        ref.setAuthnContextClassRef (AuthnContext.PPT_AUTHN_CTX);
+        ref.setAuthnContextClassRef (AuthnContext.PASSWORD_AUTHN_CTX);
         
         // As of this writing, OpenSAML doesn't model the wide range of
         // authentication context namespaces defined in SAML 2.0.
@@ -73,15 +80,52 @@ public class SAMLAssertion
             (AuthnStatement.class, AuthnStatement.DEFAULT_ELEMENT_NAME);
         authnStatement.setAuthnContext (authnContext);
         authnStatement.setAuthnInstant(now);
-        
-        Assertion assertion = 
+        authnStatement.setSessionIndex(inResponseTo);
+        authnStatement.setSessionNotOnOrAfter(new DateTime().plusHours(12));
+
+//        AttributeStatement attributeStatement = create
+//                (AttributeStatement.class, AttributeStatement.DEFAULT_ELEMENT_NAME);
+//        List<Attribute> list = attributeStatement.getAttributes();
+//        Attribute attribute = create(Attribute.class, Attribute.DEFAULT_ELEMENT_NAME);
+//        attribute.setName("id");
+//        attribute.setNameFormat(Attribute.BASIC);
+        XMLObjectBuilder builder = Configuration.getBuilderFactory ()
+                .getBuilder (XSAny.TYPE_NAME);
+
+        XSAny value1 = (XSAny) builder.buildObject
+                (AttributeValue.DEFAULT_ELEMENT_NAME);
+        value1.setTextContent (userId);
+        Attribute attribute1 = create
+                (Attribute.class, Attribute.DEFAULT_ELEMENT_NAME);
+        attribute1.setName ("id");
+        attribute1.setNameFormat(Attribute.BASIC);
+        attribute1.getAttributeValues ().add (value1);
+
+        XSAny value2 = (XSAny) builder.buildObject
+                (AttributeValue.DEFAULT_ELEMENT_NAME);
+        value2.setTextContent (userName);
+
+        Attribute attribute2 = create
+                (Attribute.class, Attribute.DEFAULT_ELEMENT_NAME);
+        attribute2.setName ("username");
+        attribute2.setNameFormat(Attribute.BASIC);
+        attribute2.getAttributeValues ().add (value2);
+
+        AttributeStatement attributeStatement = create (AttributeStatement.class,
+                AttributeStatement.DEFAULT_ELEMENT_NAME);
+        attributeStatement.getAttributes ().add (attribute1);
+        attributeStatement.getAttributes ().add (attribute2);
+
+        Assertion assertion =
             create (Assertion.class, Assertion.DEFAULT_ELEMENT_NAME);
         assertion.setID (assertionId);
         assertion.setIssueInstant (now);
         assertion.setIssuer (issuer);
         assertion.getStatements ().add (authnStatement);
         assertion.setConditions(conditions);
-        
+
+        // 将 AttributeStatement 添加到 Assertion
+        assertion.getAttributeStatements().add(attributeStatement);
         return assertion;
     }
     

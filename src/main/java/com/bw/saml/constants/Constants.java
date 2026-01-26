@@ -26,22 +26,38 @@ public class Constants {
      */
     public static final String IDP_COOKIE_VALUE = "idp_cookie_value";
 
+    /**
+     * idp端首页面
+     */
+    //public static final String IDP_DOMAIN = "https://hcm-cn10.hr.sapcloud.cn/sf/home";
+    public static final String IDP_DOMAIN = "https://hcm-cn10.hr.sapcloud.cn/sf/home";
+
+    /**
+     * idp公司编码
+     */
+    public static final String BPLTE_COMPANY = "zhejiangluD";
+
 
     /**
      * sp的身份标识
      */
-    public static final String SP_ENTITY_ID = "http://localhost:8080/sp";
+    public static final String SP_ENTITY_ID = "https://ccwapi.luyuan.cn/sp";
     /**
      * idp的身份标识
      */
-    public static final String IDP_ENTITY_ID = "http://localhost:8080/idp";
+    public static final String IDP_ENTITY_ID = "https://ccwapi.luyuan.cn/idp";
     /**
      * idp的sso地址
      */
-    public static final String IDP_SSO_URL = "http://localhost:8080/idp/sso";
+    public static final String IDP_SSO_URL = "https://ccwapi.luyuan.cn/idp/sso/login";
+    /**
+     * idp的sso地址
+     */
+    public static final String IDP_LOGOUT_URL = "https://ccwapi.luyuan.cn/idp/logout";
+
     /**
      * sp的acs地址
      */
-    public static final String SP_ACS_URL = "http://localhost:8080/sp/consumer";
+    public static final String SP_ACS_URL = "https://ccwapi.luyuan.cn/sp/consumer";
 
 }
