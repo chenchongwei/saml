@@ -18,6 +18,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
+import java.util.Arrays;
 
 /**
  * @author Xiaosy
@@ -54,7 +55,10 @@ public class IdpController {
                 }
             }
         }
-        String[] valueArray = cookie_value.split("-");
+        String[] valueArray = new String[0];
+        if(cookie_value!=null){
+            valueArray = cookie_value.split("-");
+        }
         if(loginFlag && valueArray.length>1){
             //已登录，解析SAMLRequest对象,查找出用户信息
             AuthnRequestField authnRequestField = authnRequestHandler.handleAuthnRequest(SAMLRequest);
@@ -71,8 +75,23 @@ public class IdpController {
             response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
             response.setHeader("Pragma", "no-cache");
             response.setHeader("Expires", "e");
-            response.sendRedirect(Constants.IDP_DOMAIN + "/LandingPage_logout.html");
+            response.sendRedirect(Constants.IDP_DOMAIN + "/LandingPage_logout.html"+ "?bplte_company=" + Constants.BPLTE_COMPANY);
         }
+    }
+    @GetMapping("/logout")
+    public void sso(HttpServletRequest request,HttpServletResponse response) throws Exception {
+        Cookie[] cookies = request.getCookies();
+        for(Cookie cookie:cookies){
+            cookie.setMaxAge(0);
+            cookie.setPath("/");
+            response.addCookie(cookie);
+        }
+        response.reset();
+        response.setContentType("text/html;charset=utf-8");
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        response.setHeader("Pragma", "no-cache");
+        response.setHeader("Expires", "e");
+        response.sendRedirect(Constants.IDP_DOMAIN + "/LandingPage_logout.html"+ "?bplte_company=" + Constants.BPLTE_COMPANY);
     }
 
     @PostMapping("/auth")

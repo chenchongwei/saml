@@ -30,34 +30,40 @@ public class Constants {
      * idp端首页面
      */
     //public static final String IDP_DOMAIN = "https://hcm-cn10.hr.sapcloud.cn/sf/home";
-    public static final String IDP_DOMAIN = "https://hcm-cn10.hr.sapcloud.cn/sf/home";
+    public static final String IDP_DOMAIN = "https://hcm-cn10.hr.sapcloud.cn";
 
     /**
      * idp公司编码
      */
-    public static final String BPLTE_COMPANY = "zhejiangluD";
+    //public static final String BPLTE_COMPANY = "zhejiangluD";
+    public static final String BPLTE_COMPANY = "zhejianglu";
 
 
     /**
-     * sp的身份标识
+     * sp的身份标识 https://apiesb.luyuan.cn
      */
-    public static final String SP_ENTITY_ID = "https://ccwapi.luyuan.cn/sp";
+    //public static final String SP_ENTITY_ID = "https://ccwapi.luyuan.cn/sp";
+    public static final String SP_ENTITY_ID = "https://sapias.luyuan.cn/sp";
+
     /**
      * idp的身份标识
      */
-    public static final String IDP_ENTITY_ID = "https://ccwapi.luyuan.cn/idp";
+    //public static final String IDP_ENTITY_ID = "https://ccwapi.luyuan.cn/idp";
+    public static final String IDP_ENTITY_ID = "https://sapias.luyuan.cn/idp";
     /**
      * idp的sso地址
      */
-    public static final String IDP_SSO_URL = "https://ccwapi.luyuan.cn/idp/sso/login";
+    //public static final String IDP_SSO_URL = "https://ccwapi.luyuan.cn/idp/sso/login";
+    public static final String IDP_SSO_URL = "https://sapias.luyuan.cn/idp/sso/login";
     /**
      * idp的sso地址
      */
-    public static final String IDP_LOGOUT_URL = "https://ccwapi.luyuan.cn/idp/logout";
+    //public static final String IDP_LOGOUT_URL = "https://ccwapi.luyuan.cn/idp/sso/logout";
+    public static final String IDP_LOGOUT_URL = "https://sapias.luyuan.cn/idp/logout";
 
     /**
      * sp的acs地址
      */
-    public static final String SP_ACS_URL = "https://ccwapi.luyuan.cn/sp/consumer";
+    public static final String SP_ACS_URL = "https://sapias.luyuan.cn/sp/consumer";
 
 }

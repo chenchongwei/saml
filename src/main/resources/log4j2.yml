@@ -1,0 +1,63 @@
+Configuration:
+  status: DEBUG
+
+  Properties: # 定义全局变量
+    Property: # 缺省配置（用于开发环境）。其他环境需要在VM参数中指定，如下：
+      - name: pattern
+        value: "%d{yyyy-MM-dd HH:mm:ss.SSS}#_#%-5level#_#%logger{50}#_#-#_#%msg%n"
+      - name: displayName
+        value: logs/saml
+
+  Appenders:
+    Console: # 输出到控制台
+      name: CONSOLE
+      target: SYSTEM_OUT
+      follow: true
+      PatternLayout:
+        pattern: ${pattern}
+    RollingFile: # 打印DEBUG日志文件
+      - name: DEBUG_LOG
+        fileName: ${displayName}.log
+        filePattern: "${displayName}_%d{yyyy-MM-dd}.log.gz"
+        append: true
+        PatternLayout:
+          pattern: ${pattern}
+        Policies:
+          TimeBasedTriggeringPolicy:
+            modulate: true
+            interval: 1 # 每天一次
+      - name: ERROR_LOG
+        fileName: ${displayName}_error.log
+        filePattern: "${displayName}_error_%d{yyyy-MM-dd}.log.gz"
+        append: true
+        ThresholdFilter: # 指定error 级别的日志
+          level: ERROR
+          onMatch: ACCEPT
+          onMismatch: DENY
+        PatternLayout:
+          pattern: ${pattern}
+        Policies:
+          TimeBasedTriggeringPolicy:
+            modulate: true
+            interval: 1 # 每天一次
+
+  Loggers:
+    Logger: # 为com.lee包配置特殊的Log级别，方便调试
+      - name: org.springframework
+        level: WARN
+      - name: com.test
+        level: INFO
+      - name: org.mybatis
+        level: INFO
+      - name: org.apache.http
+        level: INFO
+      - name: druid.sql
+        level: INFO
+      - name: com.alibaba.druid.pool.PreparedStatementPool
+        level: INFO
+    Root:
+      level: DEBUG
+      AppenderRef:
+        - ref: CONSOLE
+        - ref: DEBUG_LOG
+        - ref: ERROR_LOG

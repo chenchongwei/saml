@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
-import static com.bw.saml.constants.Constants.IDP_DOMAIN;
-
 @RestController
 @RequestMapping("/todo")
 public class TodoController {
@@ -33,7 +31,8 @@ public class TodoController {
             }
             String actionUrl = todoUrl;
             logger.info(tag +"=> " +"执行跳转链接:"+actionUrl);
-            response.sendRedirect(todoUrl.replace("zhejianglu",Constants.BPLTE_COMPANY));
+            //response.sendRedirect(todoUrl.replace("zhejianglu",Constants.BPLTE_COMPANY));
+            response.sendRedirect(todoUrl);
         }catch (Exception e){
             logger.error(tag +"=> " + e.getMessage());
         }
